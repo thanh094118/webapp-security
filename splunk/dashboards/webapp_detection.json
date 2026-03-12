@@ -1,0 +1,61 @@
+{
+  "title": "SOC: Web Application Attack Detection (DVWA)",
+  "description": "Real-time monitoring dashboard for SQL Injection and Web Brute Force attempts.",
+  "dataSources": {
+    "ds_sqlmap_attacks": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=main sourcetype=access_combined (sqlmap OR \"union select\" OR \"or 1=1\") | timechart span=1m count by clientip"
+      }
+    },
+    "ds_top_attackers_table": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=main sourcetype=access_combined status=200 OR status=401 | stats count by clientip, uri | sort - count | head 10"
+      }
+    }
+  },
+  "visualizations": {
+    "viz_attack_trend_chart": {
+      "type": "splunk.column",
+      "options": {
+        "x": "time",
+        "y": "Attack Count",
+        "legendDisplay": "right"
+      },
+      "dataSources": {
+        "primary": "ds_sqlmap_attacks"
+      },
+      "title": "SQL Injection Attempts Over Time"
+    },
+    "viz_attacker_ip_table": {
+      "type": "splunk.table",
+      "options": {
+        "count": 10
+      },
+      "dataSources": {
+        "primary": "ds_top_attackers_table"
+      },
+      "title": "Top 10 Attacker IPs & Targeted URIs"
+    }
+  },
+  "layout": {
+    "type": "grid",
+    "options": {
+      "width": 1200,
+      "height": 800
+    },
+    "structure": [
+      {
+        "item": "viz_attack_trend_chart",
+        "type": "block",
+        "position": { "x": 0, "y": 0, "w": 12, "h": 4 }
+      },
+      {
+        "item": "viz_attacker_ip_table",
+        "type": "block",
+        "position": { "x": 0, "y": 4, "w": 12, "h": 4 }
+      }
+    ]
+  }
+}
