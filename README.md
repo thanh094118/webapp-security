@@ -1,5 +1,5 @@
 # Web Application Security Monitoring Lab
-
+  dhhhdd
 ![Lab Architecture](architecture/architecture_network.png)
 
 Simulating web attacks against **DVWA** and analyzing security telemetry using **IDS** and **SIEM**.  
